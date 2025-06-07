@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Pet camp",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,5 +16,11 @@
   "bugs": {
     "url": "https://github.com/EvTor/PetCamp/issues"
   },
-  "homepage": "https://github.com/EvTor/PetCamp#readme"
+  "homepage": "https://github.com/EvTor/PetCamp#readme",
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "mongoose": "^8.15.1"
+  }
 }
