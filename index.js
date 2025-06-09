@@ -1,8 +1,10 @@
 import express from "express";
-import mongoose from "mongoose";
 import path from "path";
 import * as dotenv from "dotenv";
 import { fileURLToPath } from "url";
+import { connectMDB } from "./dbConnection.js";
+import { Campground } from "./models/campground.js";
+
 //import methodOverride from "method-override";
 
 //Set path in ES module
@@ -25,6 +27,10 @@ const serverStart = () => {
     console.log(error);
   }
 };
+serverStart();
+
+//Connect to mongoDB
+connectMDB();
 
 //set ejs 
 app.set('view engine', 'ejs');
@@ -35,5 +41,10 @@ app.get('/', async (req, res) => {
     res.render('home')
 })
 
-serverStart();
 
+app.get('/text', async(req, res)=>{
+    const newCamp = new Campground({title: 'TestCamp1', price: 1, description: 'Test camp test', location: 'USA'});
+    await newCamp.save();
+    console.log(newCamp);
+    res.send(newCamp)
+})
