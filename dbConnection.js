@@ -7,6 +7,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
 const __dirname = path.dirname(__filename); // get the name of the directory
 
+//Set path to .env in case of using this module in other functions at differen levels
 dotenv.config({ path: path.join(__dirname, '.env') });
 
 const DB_PATH = process.env.DB_PATH;
