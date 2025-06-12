@@ -56,11 +56,6 @@ app.use("/campgrounds/:id", (req, res, next) => {
   next();
 });
 
-// Middleware to put in request
-const verifyPassword = () => {
-  console.log("Password is OK");
-};
-
 //router
 app.get("/", async (req, res) => {
   res.render("home");
@@ -72,7 +67,7 @@ app.get("/campgrounds", async (req, res) => {
 });
 
 app.get("/campgrounds/new", async (req, res) => {
-  res.render("campgrounds/form");
+  res.render("campgrounds/new");
 });
 
 app.get("/campgrounds/:id", async (req, res) => {
@@ -97,7 +92,7 @@ app.delete("/campgrounds/:id", async (req, res) => {
   res.redirect("/campgrounds");
 });
 
-app.get("/campgrounds/:id/edit", verifyPassword, async (req, res) => {
+app.get("/campgrounds/:id/edit", async (req, res) => {
   const campground = await Campground.findById(req.params.id);
   res.render("campgrounds/edit", { campground });
 });
