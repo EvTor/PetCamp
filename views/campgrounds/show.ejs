@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Show</title>
-  </head>
-  <body>
+<% layout('layouts/boilerplate') %>
     <h1><%=campground.title%></h1>
     <h2>Price: <%=campground.price%></h2>
     <h2>Location: <%=campground.location%></h2>
@@ -22,5 +15,4 @@
       </button>
       <button><a href="/campgrounds">Back to all campgrounds</a></button>
     </footer>
-  </body>
-</html>
+

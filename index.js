@@ -5,6 +5,8 @@ import { fileURLToPath } from "url";
 import { connectMDB } from "./dbConnection.js";
 import { Campground } from "./models/campground.js";
 import methodOverride from "method-override";
+import morgan from "morgan";
+import ejsMate from "ejs-mate";
 
 //import methodOverride from "method-override";
 
@@ -32,7 +34,8 @@ serverStart();
 //Connect to mongoDB
 connectMDB();
 
-//set ejs
+//set ejs and ejs-mate
+app.engine("ejs", ejsMate); //=> for defining layouts
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
@@ -42,6 +45,21 @@ app.use(express.json()); //=> to parse json
 
 //Middleware method-override to change post form => put/patch
 app.use(methodOverride("_method"));
+
+//Middleware logger morgan
+app.use(morgan("tiny"));
+
+//Middleware custom
+
+app.use("/campgrounds/:id", (req, res, next) => {
+  console.log(`Custom middleware Method: ${req.method} , Path: ${req.path}`);
+  next();
+});
+
+// Middleware to put in request
+const verifyPassword = () => {
+  console.log("Password is OK");
+};
 
 //router
 app.get("/", async (req, res) => {
@@ -79,9 +97,14 @@ app.delete("/campgrounds/:id", async (req, res) => {
   res.redirect("/campgrounds");
 });
 
-app.get("/campgrounds/:id/edit", async (req, res) => {
+app.get("/campgrounds/:id/edit", verifyPassword, async (req, res) => {
   const campground = await Campground.findById(req.params.id);
   res.render("campgrounds/edit", { campground });
+});
+
+//Middleware if nothing was found
+app.use((req, res) => {
+  res.status(404).send("Not found");
 });
 
 // app.get('/addFakeData', async(req, res)=>{
@@ -90,3 +113,5 @@ app.get("/campgrounds/:id/edit", async (req, res) => {
 //     console.log(newCamp);
 //     res.send(newCamp)
 // })
+
+
