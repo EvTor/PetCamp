@@ -1,28 +1,90 @@
 <% layout('layouts/boilerplate') %>
-<h1><%=campground.title%></h1>
-
-<div class="card" style="width: 50rem">
-  <img src="<%= campground.image %>" class="card-img-top" alt="PetCamp img" />
-  <div class="card-body">
-    <h3 class="card-title"><%=campground.title%></h3>
-    <h5>Price: <%=campground.price%></h5>
-    <h5>Location: <%=campground.location%></h5>
-    <p class="card-text"><%=campground.description%></p>
-    <div class="container mt-1">
-      <a href="/campgrounds/<%=campground._id%>/edit" class="btn btn-primary"
-        >Edit PetCamp</a
-      >
+<div class="row g-4 flex-column flex-md-row">
+  <div class="col-12 col-md-6">
+    <div class="card h-100 position-relative overflow-hidden">
+      <div class="position-relative">
+        <img
+          src="<%= campground.image %>"
+          class="card-img-top img-fluid"
+          alt="PetCamp img"
+          style="object-fit:cover; max-height:350px;"
+        />
+        <h1 class="position-absolute top-50 start-50 translate-middle text-center fw-bold display-3" style="color: #fff; text-shadow: 2px 2px 12px rgba(0,0,0,0.7), 0 0 8px #2d8659; letter-spacing: 2px; width: 100%;"> <%=campground.title%> </h1>
+      </div>
+      <div class="card-body mt-2">
+        <h3 class="card-title"><%=campground.title%></h3>
+        <h5>Price: <%=campground.price%></h5>
+        <h5>Location: <%=campground.location%></h5>
+        <p class="card-text"><%=campground.description%></p>
+        <div class="d-grid gap-2 mb-2">
+          <a
+            href="/campgrounds/<%=campground._id%>/edit"
+            class="btn btn-primary"
+            >Edit PetCamp</a
+          >
+        </div>
+      </div>
+      <div class="d-grid gap-2 mb-2 px-3">
+        <a href="/campgrounds" class="btn btn-secondary">Go back</a>
+      </div>
+      <div class="d-grid gap-2 mb-3 px-3">
+        <form
+          action="/campgrounds/<%=campground._id%>?_method=DELETE"
+          method="post"
+        >
+          <button class="btn btn-danger">Delete PetCamp</button>
+        </form>
+      </div>
     </div>
-    <div class="container mt-1">
-      <a href="/campgrounds" class="btn btn-secondary">Go back</a>
+  </div>
+  <div class="col-12 col-md-6">
+    <h2>Leave a review</h2>
+    <form
+      action="/campgrounds/<%=campground._id%>/reviews"
+      method="post"
+      class="mb-3 needs-validation"
+      novalidate
+    >
+      <div class="mb-3">
+        <label for="range">Range</label>
+        <div class="d-flex align-items-center gap-2">
+          <input
+            class="form-range"
+            type="range"
+            id="range"
+            name="review[rating]"
+            min="1"
+            max="5"
+            value="3"
+            oninput="document.getElementById('rangeValue').textContent = Math.round((this.value-1)*25) + '%'"
+          />
+          <span id="rangeValue">50%</span>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="reviewBody">Review </label>
+        <textarea
+          class="form-control"
+          name="review[body]"
+          id="reviewBody"
+          cols="30"
+          rows="3"
+          required
+        ></textarea>
+        <div class="valid-feedback">Looks good!</div>
+      </div>
+      <button class="btn btn-success">Add a review</button>
+    </form>
+    <h2>Reviews</h2>
+    <%if(campground.reviews.length >= 1){for(let review of campground.reviews){%>
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Rating: <%= review.rating%></h5>
+        <p><%= review.body%></p>
+        <form action="/campgrounds/<%=campground._id%>/reviews/<%=review._id%>?_method=DELETE" method="post">
+          <button class="btn btn-danger btn-sm">Delete</button></form>
+      </div>
     </div>
-    <div class="container mt-1">
-      <form
-        action="/campgrounds/<%=campground._id%>?_method=DELETE"
-        method="post"
-      >
-        <button class="btn btn-danger">Delete PetCamp</button>
-      </form>
-    </div>
+    <%}}%>
   </div>
 </div>

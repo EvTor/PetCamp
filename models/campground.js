@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { Review } from "./review.js";
 //reference to schema
 const Schema = mongoose.Schema;
 
@@ -23,6 +24,11 @@ const CampgroundSchema = new Schema({
   image: {
     type: String,
   },
+  reviews: [{ type: Schema.Types.ObjectId, ref: "Review" }],
+});
+
+CampgroundSchema.post("findOneAndDelete", async (camp) => {
+  await Review.deleteMany({ _id: { $in: camp.reviews } });
 });
 
 export const Campground = mongoose.model("Campground", CampgroundSchema);

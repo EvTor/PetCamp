@@ -4,12 +4,15 @@ import * as dotenv from "dotenv";
 import { fileURLToPath } from "url";
 import { connectMDB } from "./dbConnection.js";
 import { Campground } from "./models/campground.js";
+import { Review } from "./models/review.js";
 import methodOverride from "method-override";
 import morgan from "morgan";
 import ejsMate from "ejs-mate";
 import { AppError } from "./utils/AppError.js";
 import { wrapAsync } from "./utils/catchAsync.js";
 import Joi from "joi";
+import { campValidatonSchema } from "./expressValidationSchemas/campValidationSchema.js";
+import { reviewValidationSchema } from "./expressValidationSchemas/reviewValidationSchema.js";
 
 //Set path in ES module
 const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
@@ -48,28 +51,27 @@ app.use(express.json()); //=> to parse json
 app.use(methodOverride("_method"));
 
 //Middleware logger morgan
-app.use(morgan("tiny"));
+//app.use(morgan("tiny"));
 
 //Middleware for Joi validation
 const validateCamp = (req, res, next) => {
-  const campValidatonSchema = Joi.object({
-    campground: Joi.object({
-      title: Joi.string().required().min(3),
-      price: Joi.number().required().min(0),
-      image: Joi.string().required(),
-      location: Joi.string().required(),
-      description: Joi.string().required(),
-    }).required(),
-  });
   const { error } = campValidatonSchema.validate(req.body);
   if (error) {
-    const msg = error.details
-      .map((el) => {
-        el.message;
-      })
-      .join(",");
+    const msg = error.details.map((el) => el.message).join(",");
     throw new AppError(msg, 400);
-  } else next();
+  } else {
+    next();
+  }
+};
+
+const validateReview = (req, res, next) => {
+  const { error } = reviewValidationSchema.validate(req.body);
+  if (error) {
+    const msg = error.details.map((el) => el.message).join(",");
+    throw new AppError(msg, 400);
+  } else {
+    next();
+  }
 };
 
 //router
@@ -99,7 +101,9 @@ app.get(
 app.get(
   "/campgrounds/:id",
   wrapAsync(async (req, res, next) => {
-    const campground = await Campground.findById(req.params.id);
+    const campground = await Campground.findById(req.params.id).populate(
+      "reviews"
+    );
     if (!campground) {
       return next(new AppError("Camp not found", 404));
     }
@@ -118,6 +122,7 @@ app.post(
 
 app.put(
   "/campgrounds/:id",
+  validateCamp,
   wrapAsync(async (req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndUpdate(id, req.body.campground, {
@@ -128,12 +133,40 @@ app.put(
   })
 );
 
+app.post(
+  "/campgrounds/:id/reviews",
+  validateReview,
+  wrapAsync(async (req, res) => {
+    const { id } = req.params;
+    const review = await new Review(req.body.review).save();
+    const campground = await Campground.findById(id);
+    campground.reviews.push(review);
+    await review.save();
+    await campground.save();
+    console.log(campground);
+    res.redirect(`/campgrounds/${campground._id}`);
+  })
+);
+
 app.delete(
   "/campgrounds/:id",
   wrapAsync(async (req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
     res.redirect("/campgrounds");
+  })
+);
+
+app.delete(
+  "/campgrounds/:id/reviews/:reviewId",
+  wrapAsync(async (req, res) => {
+    const { id, reviewId } = req.params;
+    const campground = await Campground.findByIdAndUpdate(id, {
+      $pull: { reviews: reviewId },
+    });
+    await Review.findByIdAndDelete(reviewId);
+    console.log(campground._id);
+    res.redirect(`/campgrounds/${campground._id}`);
   })
 );
 
@@ -162,11 +195,11 @@ app.all(
 //Error handling - middleware
 
 app.use((err, req, res, next) => {
-  const { status = 500 } = err;
+  const { statusCode = 500 } = err;
   if (!err.message) {
     err.message = "Something went wrong";
   }
-  res.status(status).render("error", { err });
+  res.status(statusCode).render("error", { err });
 });
 
 // app.get('/addFakeData', async(req, res)=>{

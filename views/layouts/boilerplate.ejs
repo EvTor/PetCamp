@@ -10,6 +10,21 @@
       integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT"
       crossorigin="anonymous"
     />
+    <style>
+      body {
+        background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1500&q=80');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        min-height: 100vh;
+        background-attachment: fixed;
+      }
+      main.container, .alert, .card, .navbar, .footer {
+        background: rgba(255,255,255,0.92);
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      }
+    </style>
   </head>
   <body class="d-flex flex-column vh-100">
     <%-include('../partials/navbar')%>

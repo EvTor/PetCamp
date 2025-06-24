@@ -1,9 +1,11 @@
 <% layout('layouts/boilerplate') %>
-<div class="alert alert-danger" role="alert">
-  <h4 class="alert-heading">Oh no ERROR!</h4>
-  <p><%=err.message%></p>
-  <hr />
-  <p class="mb-0">
-   <%=err.stack%>
-  </p>
+<div class="container d-flex flex-column justify-content-center align-items-center min-vh-100">
+  <div class="alert alert-danger w-100 w-md-75 w-lg-50" role="alert">
+    <h4 class="alert-heading">Oh no ERROR!</h4>
+    <p><%=err.message%></p>
+    <hr />
+    <p class="mb-0">
+     <%=err.stack%>
+    </p>
+  </div>
 </div>
