@@ -1,6 +1,18 @@
 <% layout('layouts/boilerplate') %>
-<div class="container d-flex flex-column justify-content-center align-items-center min-vh-100">
+<div
+  class="container d-flex flex-column justify-content-center align-items-center min-vh-100"
+>
   <a href="/campgrounds" class="text-decoration-none">
-    <h1 class="display-1 text-center fw-bold" style="color: #fff; text-shadow: 2px 2px 16px rgba(0,0,0,0.7), 0 0 8px #2d8659; letter-spacing: 2px;">Welcome to PetCamp!</h1>
+    <h1
+      class="display-1 text-center fw-bold"
+      style="
+        color: #fff;
+        text-shadow: 2px 2px 16px rgba(0, 0, 0, 0.7), 0 0 8px #2d8659;
+        letter-spacing: 2px;
+      "
+    >
+      Welcome to PetCamp!
+    </h1>
   </a>
+  <h2>You visited this site for <%=count%> times</h2>
 </div>

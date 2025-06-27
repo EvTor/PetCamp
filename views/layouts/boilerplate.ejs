@@ -12,52 +12,33 @@
     />
     <style>
       body {
-        background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1500&q=80');
+        background-image: url("https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1500&q=80");
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
         min-height: 100vh;
         background-attachment: fixed;
       }
-      main.container, .alert, .card, .navbar, .footer {
-        background: rgba(255,255,255,0.92);
+      main.container,
+      .alert,
+      .card,
+      .navbar,
+      .footer {
+        background: rgba(255, 255, 255, 0.92);
         border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
       }
     </style>
   </head>
   <body class="d-flex flex-column vh-100">
     <%-include('../partials/navbar')%>
-    <main class="container"><%- body%></main><%-include('../partials/footer')%> 
+    <main class="container"><%- body%></main>
+    <%-include('../partials/footer')%>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
       crossorigin="anonymous"
     ></script>
-    <script>
-  // Example starter JavaScript for disabling form submissions if there are invalid fields
-  (function () {
-    "use strict";
-
-    // Fetch all the forms we want to apply custom Bootstrap validation styles to
-    const forms = document.querySelectorAll(".needs-validation");
-
-    // Loop over them and prevent submission
-    Array.prototype.slice.call(forms).forEach(function (form) {
-      form.addEventListener(
-        "submit",
-        function (event) {
-          if (!form.checkValidity()) {
-            event.preventDefault();
-            event.stopPropagation();
-          }
-
-          form.classList.add("was-validated");
-        },
-        false
-      );
-    });
-  })();
-</script>
+    <script src="/js/validateForm.js"></script>
   </body>
 </html>
