@@ -29,7 +29,9 @@ routerCamp.get(
       "reviews"
     );
     if (!campground) {
-      return next(new AppError("Camp not found", 404));
+      req.flash("error", "Cannot find campground");
+      return res.redirect("/campgrounds");
+      //return next(new AppError("Camp not found", 404));
     }
     res.render("campgrounds/show", {
       campground,
@@ -75,6 +77,11 @@ routerCamp.get(
   "/:id/edit",
   wrapAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id);
+    if (!campground) {
+      req.flash("error", "Cannot find campground");
+      return res.redirect("/campgrounds");
+      //return next(new AppError("Camp not found", 404));
+    }
     res.render("campgrounds/edit", { campground });
   })
 );
