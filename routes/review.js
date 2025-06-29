@@ -21,7 +21,7 @@ routerReview.post(
 );
 
 routerReview.delete(
-  ":reviewId",
+  "/:reviewId",
   wrapAsync(async (req, res) => {
     const { id, reviewId } = req.params;
     const campground = await Campground.findByIdAndUpdate(id, {

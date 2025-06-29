@@ -1,13 +1,10 @@
 import express from "express";
 import { wrapAsync } from "../utils/catchAsync.js";
-import {validateCamp} from "../utils/validation.js";
+import { validateCamp } from "../utils/validation.js";
 import { Campground } from "../models/campground.js";
 import { AppError } from "../utils/AppError.js";
 
-
-export const routerCamp = express.Router();
-
-
+export const routerCamp = express.Router({ mergeParams: true });
 
 routerCamp.get(
   "/",
@@ -42,12 +39,12 @@ routerCamp.get(
 );
 
 routerCamp.post(
-  "",
+  "/",
   validateCamp,
   wrapAsync(async (req, res) => {
     const newCampground = await new Campground(req.body.campground).save();
     req.flash("success", "Successfully created new camp!");
-    res.redirect(`/${newCampground._id}`);
+    res.redirect(`campgrounds/${newCampground._id}`);
   })
 );
 
@@ -60,20 +57,18 @@ routerCamp.put(
       new: true,
       runValidators: true,
     });
-    res.redirect(`/${id}`);
+    res.redirect(`campgrounds/${id}`);
   })
 );
-
 
 routerCamp.delete(
   "/:id",
   wrapAsync(async (req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
-    res.redirect("");
+    res.redirect("/");
   })
 );
-
 
 routerCamp.get(
   "/:id/edit",
