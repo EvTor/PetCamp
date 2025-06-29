@@ -33,7 +33,6 @@ routerCamp.get(
     }
     res.render("campgrounds/show", {
       campground,
-      messages: req.flash("success"),
     });
   })
 );
@@ -44,7 +43,7 @@ routerCamp.post(
   wrapAsync(async (req, res) => {
     const newCampground = await new Campground(req.body.campground).save();
     req.flash("success", "Successfully created new camp!");
-    res.redirect(`campgrounds/${newCampground._id}`);
+    res.redirect(`/campgrounds/${newCampground._id}`);
   })
 );
 
@@ -57,7 +56,8 @@ routerCamp.put(
       new: true,
       runValidators: true,
     });
-    res.redirect(`campgrounds/${id}`);
+    req.flash("success", "Successfully updated Camp");
+    res.redirect(`/campgrounds/${id}`);
   })
 );
 
@@ -66,7 +66,8 @@ routerCamp.delete(
   wrapAsync(async (req, res) => {
     const { id } = req.params;
     await Campground.findByIdAndDelete(id);
-    res.redirect("/");
+    req.flash("success", "Successfully deleted Camp");
+    res.redirect("/campgrounds");
   })
 );
 

@@ -15,6 +15,7 @@ import session from "express-session";
 import flash from "connect-flash";
 import { routerCamp } from "./routes/campground.js";
 import { routerReview } from "./routes/review.js";
+import { error } from "console";
 //Set path in ES module
 const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
 const __dirname = path.dirname(__filename); // get the name of the directory
@@ -48,7 +49,20 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true })); //=> to parse url
 app.use(express.json()); //=> to parse json
 app.use(cookieParser("secret string")); //=> to parse cookies
-app.use(session({ secret: "secret" }));
+
+//Middleware for session
+const sessionConfig = {
+  secret: "superSecret",
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    httpOnly: true,
+    expires: Date.now() + 1000 * 60 * 60 * 24,
+    maxAge: 1000 * 60 * 60 * 24,
+  },
+  //store: SOME DB=> redis/ mongo...
+};
+app.use(session(sessionConfig)); //=> to work with sessions
 
 //Middleware method-override to change post form => put/patch
 app.use(methodOverride("_method"));
@@ -58,6 +72,11 @@ app.use(methodOverride("_method"));
 
 //Middleware for flash messages
 app.use(flash());
+app.use((req, res, next) => {
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
+  next();
+});
 
 //Middleware for static files
 app.use(express.static(path.join(__dirname, "public")));
