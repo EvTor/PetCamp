@@ -13,9 +13,13 @@ import { wrapAsync } from "./utils/catchAsync.js";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import flash from "connect-flash";
+import { routerUser } from "./routes/user.js";
 import { routerCamp } from "./routes/campground.js";
 import { routerReview } from "./routes/review.js";
-import { error } from "console";
+import passport from "passport";
+import LocalStrategy from "passport-local";
+import { User } from "./models/user.js";
+
 //Set path in ES module
 const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
 const __dirname = path.dirname(__filename); // get the name of the directory
@@ -81,6 +85,14 @@ app.use((req, res, next) => {
 //Middleware for static files
 app.use(express.static(path.join(__dirname, "public")));
 
+//Middleware for authentication by PASSPORT
+app.use(passport.initialize());
+app.use(passport.session()); //session shoud be used before passport.session
+passport.use(new LocalStrategy(User.authenticate())); //use LocalStrategy for the User model => the method authenticat is automatic by PASSPORT - black magic
+
+passport.serializeUser(User.serializeUser()); //how to store on the session
+passport.deserializeUser(User.deserializeUser()); //how unstore on the session
+
 //router
 app.get(
   "/",
@@ -97,6 +109,7 @@ app.get(
   })
 );
 
+app.use("/users", routerUser);
 app.use("/campgrounds", routerCamp);
 app.use("/campgrounds/:id/reviews", routerReview);
 

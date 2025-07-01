@@ -1,0 +1,45 @@
+<% layout('layouts/boilerplate') %>
+
+<div class="row justify-content-center">
+  <div class="col-12 col-md-8 col-lg-6">
+    <h1 class="text-center mb-4">Login</h1>
+    <form
+      action="/user/login"
+      method="post"
+      class="needs-validation"
+      novalidate
+    >
+      <div class="mb-3">
+        <label class="form-label" for="username">Username</label>
+        <input
+          class="form-control"
+          type="text"
+          id="username"
+          name="username"
+          required
+        />
+        <div class="valid-feedback">Looks good!</div>
+      </div>
+            <div class="mb-3">
+        <label class="form-label" for="password">Password</label>
+        <input
+          class="form-control"
+          type="password"
+          id="password"
+          name="password"
+          required
+        />
+        <div class="valid-feedback">Looks good!</div>
+      </div>
+      </div>
+      <div class="mb-3 d-grid">
+        <button class="btn btn-primary">Login</button>
+      </div>
+    </form>
+    <div class="d-grid mt-2">
+      <a class="btn btn-secondary" href="/">Go back</a>
+    </div>
+  </div>
+</div>
+
+
