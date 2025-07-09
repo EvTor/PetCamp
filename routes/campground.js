@@ -3,6 +3,8 @@ import { wrapAsync } from "../utils/catchAsync.js";
 import { validateCamp } from "../utils/validation.js";
 import { Campground } from "../models/campground.js";
 import { AppError } from "../utils/AppError.js";
+import { isLoggedIn } from "../middleware/isLogggedIn.js";
+import { isAuthor } from "../middleware/isAuthor.js";
 
 export const routerCamp = express.Router({ mergeParams: true });
 
@@ -17,6 +19,7 @@ routerCamp.get(
 
 routerCamp.get(
   "/new",
+  isLoggedIn,
   wrapAsync(async (req, res) => {
     res.render("campgrounds/new");
   })
@@ -25,9 +28,9 @@ routerCamp.get(
 routerCamp.get(
   "/:id",
   wrapAsync(async (req, res, next) => {
-    const campground = await Campground.findById(req.params.id).populate(
-      "reviews"
-    );
+    const campground = await Campground.findById(req.params.id)
+      .populate("reviews")
+      .populate("author");
     if (!campground) {
       req.flash("error", "Cannot find campground");
       return res.redirect("/campgrounds");
@@ -41,9 +44,12 @@ routerCamp.get(
 
 routerCamp.post(
   "/",
+  isLoggedIn,
   validateCamp,
   wrapAsync(async (req, res) => {
-    const newCampground = await new Campground(req.body.campground).save();
+    const newCampground = await new Campground(req.body.campground);
+    newCampground.author = req.user._id;
+    await newCampground.save();
     req.flash("success", "Successfully created new camp!");
     res.redirect(`/campgrounds/${newCampground._id}`);
   })
@@ -51,6 +57,8 @@ routerCamp.post(
 
 routerCamp.put(
   "/:id",
+  isLoggedIn,
+  isAuthor,
   validateCamp,
   wrapAsync(async (req, res) => {
     const { id } = req.params;
@@ -65,8 +73,11 @@ routerCamp.put(
 
 routerCamp.delete(
   "/:id",
+  isLoggedIn,
+  isAuthor,
   wrapAsync(async (req, res) => {
     const { id } = req.params;
+    console.log(id);
     await Campground.findByIdAndDelete(id);
     req.flash("success", "Successfully deleted Camp");
     res.redirect("/campgrounds");
@@ -75,6 +86,8 @@ routerCamp.delete(
 
 routerCamp.get(
   "/:id/edit",
+  isLoggedIn,
+  isAuthor,
   wrapAsync(async (req, res) => {
     const campground = await Campground.findById(req.params.id);
     if (!campground) {

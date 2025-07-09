@@ -1,4 +1,4 @@
-<% layout('layouts/boilerplate') %> 
+<% layout('layouts/boilerplate') %>
 <div class="row g-4 flex-column flex-md-row">
   <div class="col-12 col-md-6">
     <div class="card h-100 position-relative overflow-hidden">
@@ -25,25 +25,38 @@
         <h3 class="card-title"><%=campground.title%></h3>
         <h5>Price: <%=campground.price%></h5>
         <h5>Location: <%=campground.location%></h5>
+        <h6 class="text-muted">
+          Submitted by: <%=campground.author.username%>
+        </h6>
         <p class="card-text"><%=campground.description%></p>
-        <div class="d-grid gap-2 mb-2">
-          <a
-            href="/campgrounds/<%=campground._id%>/edit"
-            class="btn btn-primary"
-            >Edit PetCamp</a
-          >
+      </div>
+      <% if(currentUser && campground.author._id.toString() === currentUser._id.toString()){%>
+      <div class="container mb-3">
+        <div class="row">
+          <div class="col d-grid">
+            <a
+              href="/campgrounds/<%=campground._id%>/edit"
+              class="btn btn-primary"
+              type="button"
+              >Edit PetCamp</a
+            >
+          </div>
+          <div class="col">
+            <form
+              class="d-grid"
+              action="/campgrounds/<%=campground._id%>?_method=DELETE"
+              method="post"
+            >
+              <button class="btn btn-danger" type="submit">
+                Delete PetCamp
+              </button>
+            </form>
+          </div>
         </div>
       </div>
-      <div class="d-grid gap-2 mb-2 px-3">
+      <%}%>
+      <div class="d-grid mb-3 px-3">
         <a href="/campgrounds" class="btn btn-secondary">Go back</a>
-      </div>
-      <div class="d-grid gap-2 mb-3 px-3">
-        <form
-          action="/campgrounds/<%=campground._id%>?_method=DELETE"
-          method="post"
-        >
-          <button class="btn btn-danger">Delete PetCamp</button>
-        </form>
       </div>
     </div>
   </div>

@@ -74,14 +74,6 @@ app.use(methodOverride("_method"));
 //Middleware logger morgan
 //app.use(morgan("tiny"));
 
-//Middleware for flash messages
-app.use(flash());
-app.use((req, res, next) => {
-  res.locals.success = req.flash("success");
-  res.locals.error = req.flash("error");
-  next();
-});
-
 //Middleware for static files
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -92,6 +84,15 @@ passport.use(new LocalStrategy(User.authenticate())); //use LocalStrategy for th
 
 passport.serializeUser(User.serializeUser()); //how to store on the session
 passport.deserializeUser(User.deserializeUser()); //how unstore on the session
+
+//Middleware for flash messages
+app.use(flash());
+app.use((req, res, next) => {
+  res.locals.currentUser = req.user;
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
+  next();
+});
 
 //router
 app.get(
