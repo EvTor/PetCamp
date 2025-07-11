@@ -30,7 +30,8 @@
         </h6>
         <p class="card-text"><%=campground.description%></p>
       </div>
-      <% if(currentUser && campground.author._id.toString() === currentUser._id.toString()){%>
+      <% if(currentUser && campground.author._id.toString() ===
+      currentUser._id.toString()){%>
       <div class="container mb-3">
         <div class="row">
           <div class="col d-grid">
@@ -61,6 +62,7 @@
     </div>
   </div>
   <div class="col-12 col-md-6">
+    <% if(currentUser){%>
     <h2>Leave a review</h2>
     <form
       action="/campgrounds/<%=campground._id%>/reviews"
@@ -98,19 +100,26 @@
       </div>
       <button class="btn btn-success">Add a review</button>
     </form>
+    <%}%>
     <h2>Reviews</h2>
     <%if(campground.reviews.length >= 1){for(let review of
     campground.reviews){%>
     <div class="card mb-3">
       <div class="card-body">
+        <%if(review.author && review.author.username){%>
+        <h4 class="card-title">By: <%= review.author.username%></h4>
+        <%}%>
         <h5 class="card-title">Rating: <%= review.rating%></h5>
         <p><%= review.body%></p>
+        <% if(currentUser && review.author && review.author._id.toString() ===
+        currentUser._id.toString()){%>
         <form
           action="/campgrounds/<%=campground._id%>/reviews/<%=review._id%>?_method=DELETE"
           method="post"
         >
           <button class="btn btn-danger btn-sm">Delete</button>
         </form>
+        <%}%>
       </div>
     </div>
     <%}}%>

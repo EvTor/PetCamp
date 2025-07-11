@@ -3,32 +3,20 @@ import { wrapAsync } from "../utils/catchAsync.js";
 import { validateReview } from "../utils/validation.js";
 import { Campground } from "../models/campground.js";
 import { Review } from "../models/review.js";
+import { isLoggedIn } from "../middleware/isLogggedIn.js";
+import { isReviewAuthor } from "../middleware/isAuthor.js";
+import { createReview, deleteReview } from "../controllers/review.js";
 
-export const routerReview = express.Router({mergeParams: true});
+export const routerReview = express.Router({ mergeParams: true });
 routerReview.post(
   "/",
   validateReview,
-  wrapAsync(async (req, res) => {
-    const { id } = req.params;
-    const review = await new Review(req.body.review).save();
-    const campground = await Campground.findById(id);
-    campground.reviews.push(review);
-    await review.save();
-    await campground.save();
-    req.flash('success', 'Created new review');
-    res.redirect(`/campgrounds/${campground._id}`);
-  })
+  isLoggedIn,
+  wrapAsync(createReview)
 );
 
 routerReview.delete(
   "/:reviewId",
-  wrapAsync(async (req, res) => {
-    const { id, reviewId } = req.params;
-    const campground = await Campground.findByIdAndUpdate(id, {
-      $pull: { reviews: reviewId },
-    });
-    await Review.findByIdAndDelete(reviewId);
-    req.flash('success', 'Successfully deleted review')
-    res.redirect(`/campgrounds/${campground._id}`);
-  })
+  isLoggedIn, isReviewAuthor,
+  wrapAsync(deleteReview)
 );
