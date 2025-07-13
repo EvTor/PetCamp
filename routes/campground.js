@@ -12,6 +12,14 @@ import {
   renderUpdateForm,
   updateCampground,
 } from "../controllers/campground.js";
+import multer from "multer";
+import {
+  cloudinaryStorageObject,
+  cloudinaryConfig,
+} from "../utils/cloudinary.js";
+
+const upload = multer({ storage: cloudinaryStorageObject });
+//const upload = multer({ dest: 'uploads/'});
 
 export const routerCamp = express.Router({ mergeParams: true });
 
@@ -20,8 +28,10 @@ routerCamp.get("/new", isLoggedIn, wrapAsync(renderNewForm));
 routerCamp
   .route("/")
   .get(wrapAsync(index))
-  .post(isLoggedIn, validateCamp, wrapAsync(createNewCampground));
-
+  //.post(isLoggedIn, validateCamp, wrapAsync(createNewCampground));
+  .post(upload.array("image"), (req, res) => {
+    console.log(req.body, req.files);
+  });
 routerCamp
   .route("/:id")
   .get(wrapAsync(getCampground))
