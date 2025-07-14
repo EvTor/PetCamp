@@ -28,10 +28,13 @@ routerCamp.get("/new", isLoggedIn, wrapAsync(renderNewForm));
 routerCamp
   .route("/")
   .get(wrapAsync(index))
-  //.post(isLoggedIn, validateCamp, wrapAsync(createNewCampground));
-  .post(upload.array("image"), (req, res) => {
-    console.log(req.body, req.files);
-  });
+  .post(
+    isLoggedIn,
+    validateCamp,
+    upload.array("image"),
+    wrapAsync(createNewCampground)
+  );
+
 routerCamp
   .route("/:id")
   .get(wrapAsync(getCampground))

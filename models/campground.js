@@ -21,9 +21,12 @@ const CampgroundSchema = new Schema({
     type: String,
     required: true,
   },
-  image: {
-    type: String,
-  },
+  images: [
+    {
+      url: String,
+      filename: String,
+    },
+  ],
   reviews: [{ type: Schema.Types.ObjectId, ref: "Review" }],
   author: { type: Schema.Types.ObjectId, ref: "User" },
 });

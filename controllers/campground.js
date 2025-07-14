@@ -35,7 +35,11 @@ export const getCampground = async (req, res, next) => {
 };
 
 export const createNewCampground = async (req, res) => {
-  const newCampground = await new Campground(req.body.campground);
+    const newCampground = await new Campground(req.body.campground);
+  //req.files from multer and cloudinary
+  newCampground.images = req.files.map((file) => {
+    return { url: file.path, filename: file.filename };
+  });
   newCampground.author = req.user._id;
   await newCampground.save();
   req.flash("success", "Successfully created new camp!");

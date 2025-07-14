@@ -22,8 +22,9 @@ export const cloudinaryStorageObject = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: "Camp",
-    format: async (req, res) => "png",
-    public_id: (req, file) => "computed-filename-using-request",
+    // Use `allowed_formats` to specify which file formats are permitted for upload.
+    // This is the correct parameter for validation.
+    allowed_formats: ["png", "jpg", "jpeg", "pdf", "tif", "gif"],
   },
 });
 

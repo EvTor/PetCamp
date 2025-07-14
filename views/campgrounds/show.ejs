@@ -4,12 +4,14 @@
   <div class="col-12 col-md-6">
     <div class="card h-100 position-relative overflow-hidden">
       <div class="position-relative">
+        <%for(let image of campground.images){%>
         <img
-          src="<%= campground.image %>"
+          src="<%= image.url %>"
           class="card-img-top img-fluid"
           alt="PetCamp img"
           style="object-fit: cover; max-height: 350px"
         />
+        <%}%>
         <h1
           class="position-absolute top-50 start-50 translate-middle text-center fw-bold display-3"
           style="
