@@ -1,16 +1,49 @@
 <% layout('layouts/boilerplate') %>
 <link rel="stylesheet" href="/stylesheets/star.css" />
+
 <div class="row g-4 flex-column flex-md-row">
   <div class="col-12 col-md-6">
     <div class="card h-100 position-relative overflow-hidden">
       <div class="position-relative">
-        <%for(let image of campground.images){%>
-        <img
-          src="<%= image.url %>"
-          class="card-img-top img-fluid"
-          alt="PetCamp img"
-          style="object-fit: cover; max-height: 350px"
-        />
+        <%if(campground.images.length >= 1){%>
+        <div
+          id="campImagesControl"
+          class="carousel slide"
+          data-bs-ride="carousel"
+        >
+          <div class="carousel-inner">
+            <%campground.images.forEach((image, index) => {%>
+            <div class="carousel-item <%=index===0?'active':''%>">
+              <img
+                src="<%= image.url %>"
+                class="d-block w-100"
+                alt=""
+                style="height: 300px; object-fit: cover"
+              />
+            </div>
+            <%})%>
+          </div>
+          <button
+            class="carousel-control-prev"
+            type="button"
+            data-bs-target="#campImagesControl"
+            data-bs-slide="prev"
+          >
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button
+            class="carousel-control-next"
+            type="button"
+            data-bs-target="#campImagesControl"
+            data-bs-slide="next"
+          >
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+        <%}else{%> 
+        <div style="height: 300px; object-fit: cover"></div>
         <%}%>
         <h1
           class="position-absolute top-50 start-50 translate-middle text-center fw-bold display-3"
@@ -74,7 +107,6 @@
       novalidate
     >
       <div class="mb-3">
-
         <div class="d-flex align-items-center gap-2">
           <fieldset class="starability-basic">
             <input
