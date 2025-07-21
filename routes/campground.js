@@ -38,7 +38,13 @@ routerCamp
 routerCamp
   .route("/:id")
   .get(wrapAsync(getCampground))
-  .put(isLoggedIn, isAuthor, validateCamp, wrapAsync(updateCampground))
+  .put(
+    isLoggedIn,
+    isAuthor,
+    validateCamp,
+    upload.array("image"),
+    wrapAsync(updateCampground)
+  )
   .delete(isLoggedIn, isAuthor, wrapAsync(deleteCampground));
 
 routerCamp.get("/:id/edit", isLoggedIn, isAuthor, wrapAsync(renderUpdateForm));

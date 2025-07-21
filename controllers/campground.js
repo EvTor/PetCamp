@@ -29,6 +29,7 @@ export const getCampground = async (req, res, next) => {
     return res.redirect("/campgrounds");
     //return next(new AppError("Camp not found", 404));
   }
+  console.log(campground)
   res.render("campgrounds/show", {
     campground,
   });
@@ -48,10 +49,15 @@ export const createNewCampground = async (req, res) => {
 
 export const updateCampground = async (req, res) => {
   const { id } = req.params;
-  await Campground.findByIdAndUpdate(id, req.body.campground, {
+  const campground = await Campground.findByIdAndUpdate(id, req.body.campground, {
     new: true,
     runValidators: true,
   });
+  const imgs = req.files.map((file) => {
+    return { url: file.path, filename: file.filename };
+  });
+  campground.images.push(...imgs);
+  await campground.save();
   req.flash("success", "Successfully updated Camp");
   res.redirect(`/campgrounds/${id}`);
 };
