@@ -48,16 +48,38 @@
         <div class="valid-feedback">Looks good!</div>
       </div>
       <div class="mb-3">
-        <label class="form-label" for="image">Image URL</label>
+        <label class="form-label" for="image">Images</label>
         <input
           class="form-control"
           type="file"
           id="image"
           name="image"
           value="<%=campground.image%>"
-          required
+          multiple
         />
         <div class="valid-feedback">Looks good!</div>
+      </div>
+      <div class="mb-3">
+        <%campground.images.forEach((img, index) =>{%>
+        <img
+          src="<%=img.url%>"
+          class="img-thumbnail"
+          alt="<%=campground.title%>"
+          class="img-thumbnail"
+        />
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            value="<%=img.filename%>"
+            id="image<%=index%>"
+            name="deleteImages[]"
+          />
+          <label class="form-check-label" for="image<%=index%>">
+            Delete image
+          </label>
+        </div>
+        <%})%>
       </div>
       <div class="mb-3">
         <label class="form-label" for="description">Description</label>
@@ -68,7 +90,8 @@
           name="campground[description]"
           required
         >
-<%=campground.description%></textarea>
+<%=campground.description%></textarea
+        >
         <div class="valid-feedback">Looks good!</div>
       </div>
       <div class="mb-3 d-grid">
